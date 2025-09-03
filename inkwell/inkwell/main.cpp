@@ -1,6 +1,9 @@
 #include <windows.h>
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	//uMsg - код сообщения.
+	//Далее идут доп. параметры.
+
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
@@ -36,6 +39,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	if (hwnd == NULL) {
 		return 1;
 	}
+
+	ShowWindow(hwnd, nCmdShow);
 
 	MSG msg = {};
 	//GetMessage извлекает сообщения для любого окна, 
