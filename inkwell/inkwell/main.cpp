@@ -21,6 +21,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			DestroyWindow(hwnd);
 		}
 		return 0;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
@@ -54,7 +57,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		NULL //Дополнительные данные приложения.
 		);
 	if (hwnd == NULL) {
-		return 1;
+		return 0;
 	}
 
 	ShowWindow(hwnd, nCmdShow);
