@@ -3,16 +3,21 @@
 const char CLASS_NAME[] = "Inkwell Main Class";
 const char MAIN_WINDOW_NAME[] = "Inkwell";
 
+struct WindowState {
+	int shift;
+};
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	//uMsg - код сообщени€.
 	//ƒалее идут доп. параметры.
 	switch (uMsg) {
 	case WM_PAINT:
 		{
+			WindowState* window_state = (WindowState*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 			//—труктура дл€ рисовани€ клиентской части окна.
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hwnd, &ps);
-			FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW));
+			FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW + window_state->shift));
 			EndPaint(hwnd, &ps);
 		}
 		return 0;
@@ -22,7 +27,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		}
 		return 0;
 	case WM_DESTROY:
-		PostQuitMessage(0);
+		{
+			WindowState* window_state = (WindowState*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+			delete window_state;
+			PostQuitMessage(0);
+		}
+		return 0;
+	case WM_CREATE:
+		{
+			CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
+			WindowState* window_state = reinterpret_cast<WindowState*>(pCreate->lpCreateParams);
+			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window_state);
+		}
 		return 0;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -42,6 +58,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wc.lpszClassName = CLASS_NAME;
 	RegisterClass(&wc);
 
+	WindowState* window_state = new WindowState();
+	window_state->shift = 4;
+
 	HWND hwnd = CreateWindowEx(
 		0, //—тили окна (они не нужны потребител€м)
 		CLASS_NAME,
@@ -54,7 +73,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		NULL, //Parent
 		NULL, //Menu
 		hInstance,
-		NULL //ƒополнительные данные приложени€.
+		window_state //ƒополнительные данные приложени€.
 		);
 	if (hwnd == NULL) {
 		return 0;
