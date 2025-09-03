@@ -1,5 +1,8 @@
 #include <windows.h>
 
+const char CLASS_NAME[] = "Inkwell Main Class";
+const char MAIN_WINDOW_NAME[] = "Inkwell";
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	//uMsg - код сообщения.
 	//Далее идут доп. параметры.
@@ -13,12 +16,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			EndPaint(hwnd, &ps);
 		}
 		return 0;
+	case WM_CLOSE:
+		if (MessageBox(hwnd, "Лох или пидор?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
+			DestroyWindow(hwnd);
+		}
+		return 0;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 }
-
-const char CLASS_NAME[] = "Inkwell Main Class";
 
 //hInstance - дескриптор модуля.
 //hPrevInstance - мусор.
@@ -36,7 +42,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	HWND hwnd = CreateWindowEx(
 		0, //Стили окна (они не нужны потребителям)
 		CLASS_NAME,
-		"Window",
+		MAIN_WINDOW_NAME,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, //X
 		CW_USEDEFAULT, //Y
