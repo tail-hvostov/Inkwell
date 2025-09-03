@@ -1,5 +1,9 @@
 #include <windows.h>
 
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
 const char CLASS_NAME[] = "Inkwell Main Class";
 
 //hInstance - дескриптор модуля.
@@ -10,7 +14,7 @@ const char CLASS_NAME[] = "Inkwell Main Class";
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PWSTR pCmdLine, int nCmdShow) {
 	WNDCLASS wc = {};
-	wc.lpfnWndProc = NULL;
+	wc.lpfnWndProc = WindowProc;
 	wc.hInstance = hInstance;
 	wc.lpszClassName = CLASS_NAME;
 	RegisterClass(&wc);
@@ -27,10 +31,22 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		NULL, //Parent
 		NULL, //Menu
 		hInstance,
-		NULL //Дополнительные данные прииложения.
+		NULL //Дополнительные данные приложения.
 		);
 	if (hwnd == NULL) {
 		return 1;
+	}
+
+	MSG msg = {};
+	//GetMessage извлекает сообщения для любого окна, 
+	//которое принадлежит вызывающему потоку и сообщения потока, 
+	//помещенные в очередь вызывающего потока при помощи
+	//использования функции PostThreadMessage.
+	while (GetMessage(&msg, NULL, 0, 0)) {
+		//Переводит нажатия клавиш в символы.
+		TranslateMessage(&msg);
+		//Передаёт сообщение в процедуру окна.
+		DispatchMessage(&msg);
 	}
 	return 0;
 }
