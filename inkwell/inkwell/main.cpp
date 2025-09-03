@@ -3,8 +3,19 @@
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	//uMsg - код сообщения.
 	//Далее идут доп. параметры.
-
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	switch (uMsg) {
+	case WM_PAINT:
+		{
+			//Структура для рисования клиентской части окна.
+			PAINTSTRUCT ps;
+			HDC hdc = BeginPaint(hwnd, &ps);
+			FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW));
+			EndPaint(hwnd, &ps);
+		}
+		return 0;
+	default:
+		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	}
 }
 
 const char CLASS_NAME[] = "Inkwell Main Class";
@@ -47,7 +58,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//которое принадлежит вызывающему потоку и сообщения потока, 
 	//помещенные в очередь вызывающего потока при помощи
 	//использования функции PostThreadMessage.
-	while (GetMessage(&msg, NULL, 0, 0)) {
+	while (GetMessage(&msg, NULL, 0, 0) > 0) {
 		//Переводит нажатия клавиш в символы.
 		TranslateMessage(&msg);
 		//Передаёт сообщение в процедуру окна.
