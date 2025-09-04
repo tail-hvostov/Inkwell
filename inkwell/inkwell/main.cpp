@@ -5,9 +5,18 @@
 const char CLASS_NAME[] = "Inkwell Main Class";
 const char MAIN_WINDOW_NAME[] = "Inkwell";
 
+HINSTANCE hInst;
+
 struct WindowState {
 	HBRUSH color;
 };
+
+INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	if (WM_CLOSE == uMsg) {
+		EndDialog(hwnd, NULL);
+	}
+	return FALSE;
+}
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	//uMsg - код сообщения.
@@ -47,11 +56,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			//Я проверяю, что сообщение послало меню.
 			if (!HIWORD(wParam)) {
 				WindowState* window_state = (WindowState*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-				if (ID_40003 == LOWORD(wParam))
+				switch (LOWORD(wParam)) {
+				case ID_40003:
 					window_state->color = (HBRUSH)COLOR_HIGHLIGHTTEXT;
-				else
+					InvalidateRect(hwnd, NULL, false);
+					break;
+				case ID_ABOUT:
+					DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutProc);
+					break;
+				default:
 					window_state->color = (HBRUSH)COLOR_WINDOW + 1;
-				InvalidateRect(hwnd, NULL, false);
+					InvalidateRect(hwnd, NULL, false);
+					break;
+				}
 			}
 		}
 		return 0;
@@ -67,6 +84,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 //свёрнутым, развёрнутым или отображаемым в обычном  режиме.
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PWSTR pCmdLine, int nCmdShow) {
+	hInst = hInstance;
+
 	WNDCLASS wc = {};
 	wc.lpfnWndProc = WindowProc;
 	wc.hInstance = hInstance;
