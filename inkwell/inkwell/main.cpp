@@ -1,5 +1,7 @@
 #include <windows.h>
 
+#include "resource.h"
+
 const char CLASS_NAME[] = "Inkwell Main Class";
 const char MAIN_WINDOW_NAME[] = "Inkwell";
 
@@ -56,6 +58,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wc.lpfnWndProc = WindowProc;
 	wc.hInstance = hInstance;
 	wc.lpszClassName = CLASS_NAME;
+	wc.lpszMenuName = MAKEINTRESOURCE(IDR_MENU1);
 	RegisterClass(&wc);
 
 	WindowState* window_state = new WindowState();
