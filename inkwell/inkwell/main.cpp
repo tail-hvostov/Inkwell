@@ -6,7 +6,7 @@ const char CLASS_NAME[] = "Inkwell Main Class";
 const char MAIN_WINDOW_NAME[] = "Inkwell";
 
 struct WindowState {
-	int shift;
+	HBRUSH color;
 };
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -19,7 +19,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			//Структура для рисования клиентской части окна.
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hwnd, &ps);
-			FillRect(hdc, &ps.rcPaint, (HBRUSH) (COLOR_WINDOW + window_state->shift));
+			FillRect(hdc, &ps.rcPaint, window_state->color);
 			EndPaint(hwnd, &ps);
 		}
 		return 0;
@@ -42,6 +42,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window_state);
 		}
 		return 0;
+	case WM_COMMAND:
+		{
+			//Я проверяю, что сообщение послало меню.
+			if (!HIWORD(wParam)) {
+				WindowState* window_state = (WindowState*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+				if (ID_40003 == LOWORD(wParam))
+					window_state->color = (HBRUSH)COLOR_HIGHLIGHTTEXT;
+				else
+					window_state->color = (HBRUSH)COLOR_WINDOW + 1;
+				InvalidateRect(hwnd, NULL, false);
+			}
+		}
+		return 0;
 	default:
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
@@ -62,7 +75,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass(&wc);
 
 	WindowState* window_state = new WindowState();
-	window_state->shift = 4;
+	window_state->color = (HBRUSH)COLOR_GRAYTEXT;
 
 	HWND hwnd = CreateWindowEx(
 		0, //Стили окна (они не нужны потребителям)
