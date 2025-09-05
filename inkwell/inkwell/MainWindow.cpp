@@ -142,6 +142,7 @@ LRESULT MainWindow::onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 		case WM_LBUTTONDOWN:
 		case WM_RBUTTONDOWN:
+		case WM_KEYDOWN:
 		case WM_MOUSEMOVE:
 			set_active_mode();
 			return 0;
