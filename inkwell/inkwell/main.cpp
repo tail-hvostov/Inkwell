@@ -38,7 +38,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		return 0;
 	case WM_CREATE:
 		{
-			WindowState* window_state = new WindowState(hwnd);
+			WindowState* window_state = new WindowState(hwnd, hInst);
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window_state);
 		}
 		return 0;

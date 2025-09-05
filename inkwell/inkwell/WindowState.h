@@ -12,6 +12,11 @@ struct WindowState {
 private:
 	HBRUSH active_brush;
 	HBRUSH passive_brush;
+	HBITMAP sprite;
+	LONG sprite_w;
+	LONG sprite_h;
+
+	HINSTANCE hInstance;
 
 	UINT_PTR timer;
 	HWND hwnd;
@@ -19,7 +24,7 @@ private:
 
 	HBRUSH get_bg_brush();
 public:
-	WindowState(HWND hwnd);
+	WindowState(HWND hwnd, HINSTANCE hInstance);
 	~WindowState();
 
 	void set_active_color(BYTE r, BYTE g, BYTE b);
