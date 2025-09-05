@@ -6,6 +6,7 @@
 
 #define SPRITE_SPEED 80
 #define FRAME_GAP 50
+#define WAIT_GAP 5000
 
 namespace {
 	const char CLASS_NAME[] = "Inkwell Main Class";
@@ -46,7 +47,9 @@ MainWindow::MainWindow() : ProtoWindow(CLASS_NAME, MAIN_WINDOW_NAME,
 	passive_brush = CreateSolidBrush(RGB(0, 0, 0));
 	active_brush = CreateSolidBrush(RGB(0, 200, 60));
 	init_sprite();
+	//Колхоз, но это, наверное, будет вырезано в ЛР2.
 	anim_timer = NULL;
+	paint_mode = Passive;
 	set_active_mode();
 }
 
@@ -135,8 +138,13 @@ LRESULT MainWindow::onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 				}
 			}
+			return 0;
 		}
-		return 0;
+		case WM_LBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+		case WM_MOUSEMOVE:
+			set_active_mode();
+			return 0;
 	}
 	return ProtoWindow::onRawMsg(uMsg, wParam, lParam);
 }
@@ -163,24 +171,34 @@ VOID CALLBACK mode_timer_callback(HWND hwnd, UINT unnamedParam2,
 }
 
 void MainWindow::set_active_mode() {
-	if (anim_timer) {
-		KillTimer(hwnd, anim_timer);
+	if (Passive == paint_mode) {
+		if (anim_timer) {
+			KillTimer(hwnd, anim_timer);
+		}
+		anim_timer = NULL;
+		paint_mode = Active;
+		mode_timer = SetTimer(hwnd, NULL, WAIT_GAP, mode_timer_callback);
+		invalidate_client();
 	}
-	anim_timer = NULL;
-	paint_mode = Active;
-	mode_timer = SetTimer(hwnd, NULL, 5000, mode_timer_callback);
-	invalidate_client();
+	else {
+		if (mode_timer) {
+			KillTimer(hwnd, mode_timer);
+		}
+		mode_timer = SetTimer(hwnd, NULL, WAIT_GAP, mode_timer_callback);
+	}
 }
 
 void MainWindow::set_passive_mode() {
-	if (mode_timer) {
-		KillTimer(hwnd, mode_timer);
+	if (Active == paint_mode) {
+		if (mode_timer) {
+			KillTimer(hwnd, mode_timer);
+		}
+		mode_timer = NULL;
+		paint_mode = Passive;
+		sprite_stamp = GetTickCount();
+		anim_timer = SetTimer(hwnd, NULL, FRAME_GAP, anim_timer_callback);
+		invalidate_client();
 	}
-	mode_timer = NULL;
-	paint_mode = Passive;
-	sprite_stamp = GetTickCount();
-	anim_timer = SetTimer(hwnd, NULL, FRAME_GAP, anim_timer_callback);
-	invalidate_client();
 }
 
 MainWindow::~MainWindow() {
