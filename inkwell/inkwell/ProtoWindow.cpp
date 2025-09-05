@@ -81,3 +81,15 @@ LRESULT ProtoWindow::onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 ProtoWindow::~ProtoWindow() {}
+
+void ProtoWindow::invalidate_client() {
+	InvalidateRect(hwnd, NULL, false);
+}
+
+void ProtoWindow::query_client_dims(LONG* w, LONG* h) {
+	RECT rect;
+	if (GetClientRect(hwnd, &rect)) {
+		*w = rect.right;
+		*h = rect.bottom;
+	}
+}

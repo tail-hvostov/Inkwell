@@ -70,7 +70,6 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="ProtoWindow.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="RTEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="inkwell.rc" />

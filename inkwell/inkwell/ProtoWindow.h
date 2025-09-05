@@ -19,6 +19,8 @@ public:
 													WPARAM wParam, LPARAM lParam);
 	bool is_sufficient();
 	void show(int nCmdShow);
+	void invalidate_client();
+	void query_client_dims(LONG* w, LONG* h);
 
 	virtual ~ProtoWindow();
 };
