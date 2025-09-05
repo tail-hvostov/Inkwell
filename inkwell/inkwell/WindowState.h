@@ -18,7 +18,7 @@ private:
 
 	HINSTANCE hInstance;
 
-	UINT_PTR timer;
+	UINT_PTR mode_timer;
 	HWND hwnd;
 	PaintModes paint_mode;
 
@@ -28,6 +28,8 @@ public:
 	~WindowState();
 
 	void set_active_color(BYTE r, BYTE g, BYTE b);
+
+	void set_active_mode();
 	void set_passive_mode();
 
 	int paint();

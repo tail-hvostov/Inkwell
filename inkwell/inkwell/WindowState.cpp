@@ -23,17 +23,18 @@ WindowState::WindowState(HWND hwnd, HINSTANCE hInstance) {
 	sprite = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_SPRITE));
 	query_bitmap_dimensions(sprite, &sprite_w, &sprite_h);
 	
-	paint_mode = Active;
 	this->hwnd = hwnd;
 	this->hInstance = hInstance;
-	timer = SetTimer(hwnd, NULL, 5000, timer_callback);
+	set_active_mode();
 }
 
 WindowState::~WindowState() {
 	DeleteObject(passive_brush);
 	DeleteObject(active_brush);
 	DeleteObject(sprite);
-	KillTimer(hwnd, timer);
+	if (mode_timer) {
+		KillTimer(hwnd, mode_timer);
+	}
 }
 
 void WindowState::set_active_color(BYTE r, BYTE g, BYTE b) {
@@ -41,7 +42,14 @@ void WindowState::set_active_color(BYTE r, BYTE g, BYTE b) {
 	active_brush = CreateSolidBrush(RGB(r, g, b));
 }
 
+void WindowState::set_active_mode() {
+	paint_mode = Active;
+	mode_timer = SetTimer(hwnd, NULL, 5000, timer_callback);
+}
+
 void WindowState::set_passive_mode() {
+	KillTimer(hwnd, mode_timer);
+	mode_timer = NULL;
 	InvalidateRect(hwnd, NULL, false);
 	paint_mode = Passive;
 }
