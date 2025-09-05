@@ -1,0 +1,26 @@
+#ifndef _PROTO_WINDOW_H_
+#define _PROTO_WINDOW_H_
+
+#include <windows.h>
+
+class ProtoWindow {
+private:
+	LRESULT window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam);
+protected:
+	HWND hwnd;
+
+	ProtoWindow(const char* class_name, const char* title, int width, int height);
+
+	virtual LRESULT onPaint(WPARAM wParam, LPARAM lParam);
+	virtual LRESULT onClose(WPARAM wParam, LPARAM lParam);
+	virtual LRESULT onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam);
+public:
+	static LRESULT CALLBACK foundation_window_proc(HWND hwnd, UINT uMsg,
+													WPARAM wParam, LPARAM lParam);
+	bool is_sufficient();
+	void show(int nCmdShow);
+
+	virtual ~ProtoWindow();
+};
+
+#endif

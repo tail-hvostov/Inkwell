@@ -60,12 +60,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="WindowState.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="ProtoWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="ProtoWindow.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="WindowState.h" />
+    <ClInclude Include="RTEntity.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="inkwell.rc" />
