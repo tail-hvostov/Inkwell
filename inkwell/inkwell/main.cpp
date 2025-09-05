@@ -1,15 +1,12 @@
-#include <windows.h>
-
 #include "resource.h"
+#include "WindowState.h"
+
+#include <windows.h>
 
 const char CLASS_NAME[] = "Inkwell Main Class";
 const char MAIN_WINDOW_NAME[] = "Inkwell";
 
 HINSTANCE hInst;
-
-struct WindowState {
-	HBRUSH color;
-};
 
 INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (WM_CLOSE == uMsg) {
@@ -25,13 +22,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 	case WM_PAINT:
 		{
 			WindowState* window_state = (WindowState*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-			//Структура для рисования клиентской части окна.
-			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint(hwnd, &ps);
-			FillRect(hdc, &ps.rcPaint, window_state->color);
-			EndPaint(hwnd, &ps);
+			return window_state->paint();
 		}
-		return 0;
 	case WM_CLOSE:
 		if (MessageBox(hwnd, "Лох или пидор?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
 			DestroyWindow(hwnd);
@@ -46,8 +38,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 		return 0;
 	case WM_CREATE:
 		{
-			CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-			WindowState* window_state = reinterpret_cast<WindowState*>(pCreate->lpCreateParams);
+			WindowState* window_state = new WindowState(hwnd);
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window_state);
 		}
 		return 0;
@@ -58,14 +49,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 				WindowState* window_state = (WindowState*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 				switch (LOWORD(wParam)) {
 				case ID_40003:
-					window_state->color = (HBRUSH)COLOR_HIGHLIGHTTEXT;
+					window_state->set_active_color(120, 200, 60);
 					InvalidateRect(hwnd, NULL, false);
 					break;
 				case ID_ABOUT:
 					DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutProc);
 					break;
 				default:
-					window_state->color = (HBRUSH)COLOR_WINDOW + 1;
+					window_state->set_active_color(120, 0, 60);
 					InvalidateRect(hwnd, NULL, false);
 					break;
 				}
@@ -93,9 +84,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wc.lpszMenuName = MAKEINTRESOURCE(IDR_MENU1);
 	RegisterClass(&wc);
 
-	WindowState* window_state = new WindowState();
-	window_state->color = (HBRUSH)COLOR_GRAYTEXT;
-
 	HWND hwnd = CreateWindowEx(
 		0, //Стили окна (они не нужны потребителям)
 		CLASS_NAME,
@@ -108,7 +96,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		NULL, //Parent
 		NULL, //Menu
 		hInstance,
-		window_state //Дополнительные данные приложения.
+		NULL //Дополнительные данные приложения.
 		);
 	if (hwnd == NULL) {
 		return 0;

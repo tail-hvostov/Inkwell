@@ -61,9 +61,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="WindowState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="WindowState.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="inkwell.rc" />
