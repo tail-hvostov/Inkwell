@@ -13,33 +13,57 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы исходного кода\UIHelper">
+      <UniqueIdentifier>{6793648b-94f8-414c-98d2-6b95dbd3b7dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\UIHelper">
+      <UniqueIdentifier>{2ded5b68-7eac-4987-984a-69d08a78f907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Заголовочные файлы\UIHelper\Controls">
+      <UniqueIdentifier>{f2a0aa4c-f10d-4663-b57c-3d6434b03d2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\UIHelper\Controls">
+      <UniqueIdentifier>{c44e84fc-6de3-4ae4-8a9c-b2a368dbff0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="ProtoWindow.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Файлы исходного кода\UIHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="ProtoWindow.cpp">
+      <Filter>Файлы исходного кода\UIHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="ProtoControl.cpp">
+      <Filter>Файлы исходного кода\UIHelper\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>Файлы исходного кода\UIHelper\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="ProtoWindow.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="MainWindow.h">
       <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Заголовочные файлы\UIHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="ProtoWindow.h">
+      <Filter>Заголовочные файлы\UIHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="ProtoControl.h">
+      <Filter>Заголовочные файлы\UIHelper\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Заголовочные файлы\UIHelper\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

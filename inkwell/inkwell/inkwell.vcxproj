@@ -63,13 +63,17 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="ProtoControl.cpp" />
     <ClCompile Include="ProtoWindow.cpp" />
+    <ClCompile Include="TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="ProtoControl.h" />
     <ClInclude Include="ProtoWindow.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TextBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="inkwell.rc" />
