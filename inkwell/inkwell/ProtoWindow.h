@@ -11,9 +11,9 @@ protected:
 
 	ProtoWindow(const char* class_name, const char* title, int width, int height);
 
-	virtual LRESULT onPaint(WPARAM wParam, LPARAM lParam);
-	virtual LRESULT onClose(WPARAM wParam, LPARAM lParam);
-	virtual LRESULT onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
+	virtual LRESULT on_close(WPARAM wParam, LPARAM lParam);
+	virtual LRESULT on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam);
 public:
 	static LRESULT CALLBACK foundation_window_proc(HWND hwnd, UINT uMsg,
 													WPARAM wParam, LPARAM lParam);

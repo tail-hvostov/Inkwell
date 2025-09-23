@@ -86,7 +86,7 @@ void MainWindow::update_sprite_pos() {
 	}
 }
 
-LRESULT MainWindow::onPaint(WPARAM wParam, LPARAM lParam) {
+LRESULT MainWindow::on_paint(WPARAM wParam, LPARAM lParam) {
 	//Структура для рисования клиентской части окна.
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(hwnd, &ps);
@@ -104,8 +104,8 @@ LRESULT MainWindow::onPaint(WPARAM wParam, LPARAM lParam) {
 	return 0;
 }
 
-LRESULT MainWindow::onClose(WPARAM wParam, LPARAM lParam) {
-	if (MessageBox(hwnd, "Лох или пидор?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
+LRESULT MainWindow::on_close(WPARAM wParam, LPARAM lParam) {
+	if (MessageBox(hwnd, "?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
 		DestroyWindow(hwnd);
 	}
 	return 0;
@@ -118,7 +118,7 @@ INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return FALSE;
 }
 
-LRESULT MainWindow::onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT MainWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg) {
 		case WM_COMMAND:
 		{
@@ -147,7 +147,7 @@ LRESULT MainWindow::onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			set_active_mode();
 			return 0;
 	}
-	return ProtoWindow::onRawMsg(uMsg, wParam, lParam);
+	return ProtoWindow::on_raw_msg(uMsg, wParam, lParam);
 }
 
 HBRUSH MainWindow::get_bg_brush() {

@@ -32,9 +32,9 @@ private:
 	MainWindow();
 	void init_sprite();
 protected:
-	virtual LRESULT onPaint(WPARAM wParam, LPARAM lParam);
-	virtual LRESULT onClose(WPARAM wParam, LPARAM lParam);
-	virtual LRESULT onRawMsg(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
+	virtual LRESULT on_close(WPARAM wParam, LPARAM lParam);
+	virtual LRESULT on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam);
 public:
 	static MainWindow* create();
 
