@@ -14,11 +14,13 @@ private:
 	std::unique_ptr<TextBox> text_box;
 
 	MainWindow();
+	void calc_textbox_rect(RECT* rect);
 protected:
 	virtual void on_create();
 	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
 	virtual LRESULT on_close(WPARAM wParam, LPARAM lParam);
 	virtual LRESULT on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual void on_resize(UINT width, UINT height);
 public:
 	static MainWindow* create();
 

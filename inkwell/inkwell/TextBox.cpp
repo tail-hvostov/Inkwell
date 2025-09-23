@@ -5,3 +5,9 @@
 
 TextBox::TextBox(int x, int y, int w, int h, ControlParent* parent) :
 				ProtoControl(CLASS_NAME, STYLE, x, y, w, h, parent)  {}
+
+void TextBox::set_size(int w, int h) {
+	RECT rect;
+	query_client_rect(&rect);
+	SetWindowPos(hwnd, NULL, rect.left, rect.top, w, h, SWP_NOZORDER | SWP_NOOWNERZORDER);
+}

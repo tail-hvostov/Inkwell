@@ -8,9 +8,12 @@
 class ProtoControl {
 protected:
 	HWND hwnd;
+	ControlParent* parent;
 
 	ProtoControl(LPCSTR class_name, DWORD dwStyle, int x, int y,
 					int w, int h, ControlParent* parent);
+
+	void query_client_rect(RECT* rect);
 public:
 	virtual ~ProtoControl();
 };

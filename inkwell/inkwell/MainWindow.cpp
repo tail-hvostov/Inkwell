@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "resource.h"
 
+#define TEXTBOX_MARGIN 10
+
 namespace {
 	const char CLASS_NAME[] = "Inkwell Main Class";
 	const char MAIN_WINDOW_NAME[] = "Inkwell";
@@ -41,7 +43,7 @@ LRESULT MainWindow::on_paint(WPARAM wParam, LPARAM lParam) {
 }
 
 LRESULT MainWindow::on_close(WPARAM wParam, LPARAM lParam) {
-	if (MessageBox(hwnd, "?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
+	if (MessageBox(hwnd, "Вы точно хотите выйти?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
 		DestroyWindow(hwnd);
 	}
 	return 0;
@@ -89,6 +91,29 @@ MainWindow::~MainWindow() {
 	DeleteObject(active_brush);
 }
 
+void MainWindow::calc_textbox_rect(RECT* rect) {
+	GetClientRect(hwnd, rect);
+	rect->left = TEXTBOX_MARGIN;
+	rect->right -= TEXTBOX_MARGIN;
+	if (rect->right < rect->left) {
+		rect->right = rect->left;
+	}
+	rect->top = TEXTBOX_MARGIN;
+	rect->bottom -= TEXTBOX_MARGIN;
+	if (rect->bottom < rect->top) {
+		rect->bottom = rect->top;
+	}
+}
+
 void MainWindow::on_create() {
-	text_box.reset(new TextBox(10, 10, 120, 40, this));
+	RECT rect;
+	calc_textbox_rect(&rect);
+	text_box.reset(new TextBox(rect.left, rect.top,
+								rect.right - rect.left,
+								rect.bottom - rect.top,
+								this));
+}
+
+void MainWindow::on_resize(UINT width, UINT height) {
+	text_box->set_size(width - TEXTBOX_MARGIN * 2, height - TEXTBOX_MARGIN * 2);
 }

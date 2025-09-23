@@ -22,12 +22,6 @@ LRESULT CALLBACK ProtoWindow::foundation_window_proc(HWND hwnd, UINT uMsg, WPARA
 			PostQuitMessage(0);
 			return 0;
 		}
-	case WM_DCREATE:
-		{
-			ProtoWindow* head = reinterpret_cast<ProtoWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-			head->on_create();
-			return 0;
-		}
 	default:
 		{
 			ProtoWindow* head = reinterpret_cast<ProtoWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
@@ -72,6 +66,16 @@ LRESULT ProtoWindow::window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			return on_paint(wParam, lParam);
 		case WM_CLOSE:
 			return on_close(wParam, lParam);
+		case WM_DCREATE:
+			on_create();
+			return 0;
+		case WM_SIZE:
+		{
+			UINT width = LOWORD(lParam);
+            UINT height = HIWORD(lParam);
+			on_resize(width, height);
+			return 0;
+		}
 		default:
 			return on_raw_msg(uMsg, wParam, lParam);
 	}
@@ -88,6 +92,8 @@ LRESULT ProtoWindow::on_close(WPARAM wParam, LPARAM lParam) {
 LRESULT ProtoWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+
+void ProtoWindow::on_resize(UINT width, UINT height) {}
 
 void ProtoWindow::on_create() {}
 

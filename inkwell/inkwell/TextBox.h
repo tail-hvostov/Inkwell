@@ -6,6 +6,8 @@
 class TextBox : public ProtoControl {
 public:
 	TextBox(int x, int y, int w, int h, ControlParent* parent);
+
+	void set_size(int w, int h);
 };
 
 #endif
