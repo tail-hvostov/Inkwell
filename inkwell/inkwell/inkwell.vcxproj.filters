@@ -47,9 +47,4 @@
       <Filter>Файлы ресурсов</Filter>
     </ResourceCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="sprite.bmp">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
-  </ItemGroup>
 </Project>

@@ -2,12 +2,6 @@
 #include "Application.h"
 #include "resource.h"
 
-#include <math.h>
-
-#define SPRITE_SPEED 80
-#define FRAME_GAP 50
-#define WAIT_GAP 5000
-
 namespace {
 	const char CLASS_NAME[] = "Inkwell Main Class";
 	const char MAIN_WINDOW_NAME[] = "Inkwell";
@@ -31,75 +25,17 @@ MainWindow* MainWindow::create() {
 	return new MainWindow();
 }
 
-void MainWindow::init_sprite() {
-	sprite = LoadBitmap(Application::Win32::get_hinstance(), MAKEINTRESOURCE(IDB_SPRITE));
-	query_bitmap_dimensions(sprite, &sprite_w, &sprite_h);
-	sprite_x = 30;
-	sprite_y = 60;
-	sprite_vx = SPRITE_SPEED;
-	sprite_vy = SPRITE_SPEED;
-	sprite_stamp = GetTickCount();
-}
-
 MainWindow::MainWindow() : ProtoWindow(CLASS_NAME, MAIN_WINDOW_NAME,
 										CW_USEDEFAULT, CW_USEDEFAULT)
 {
-	passive_brush = CreateSolidBrush(RGB(0, 0, 0));
 	active_brush = CreateSolidBrush(RGB(0, 200, 60));
-	init_sprite();
-	//Колхоз, но это, наверное, будет вырезано в ЛР2.
-	anim_timer = NULL;
-	paint_mode = Passive;
-	set_active_mode();
-}
-
-void MainWindow::update_sprite_pos() {
-	LONG client_w, client_h;
-	query_client_dims(&client_w, &client_h);
-	DWORD old_stamp = sprite_stamp;
-	sprite_stamp = GetTickCount();
-	long delta = sprite_stamp - old_stamp;
-	long shift = ((delta / 1000.0) * sprite_vx);
-	long overrun;
-
-	sprite_x += shift;
-	overrun = sprite_x + sprite_w - client_w;
-	if (overrun > 0) {
-		sprite_x -= overrun * 2;
-		sprite_vx = -SPRITE_SPEED;
-	}
-	else if (sprite_x < 0) {
-		sprite_x *= -1;
-		sprite_vx = SPRITE_SPEED;
-	}
-
-	shift = ((delta / 1000.0) * sprite_vy);
-	sprite_y += shift;
-	overrun = sprite_y + sprite_h - client_h;
-	if (overrun > 0) {
-		sprite_y -= overrun * 2;
-		sprite_vy = -SPRITE_SPEED;
-	}
-	else if (sprite_y < 0) {
-		sprite_y *= -1;
-		sprite_vy = SPRITE_SPEED;
-	}
 }
 
 LRESULT MainWindow::on_paint(WPARAM wParam, LPARAM lParam) {
 	//Структура для рисования клиентской части окна.
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(hwnd, &ps);
-	FillRect(hdc, &ps.rcPaint, get_bg_brush());
-	if (Passive == paint_mode) {
-		update_sprite_pos();
-		HDC hMemDC = CreateCompatibleDC(NULL);
-		HBITMAP old_bitmap = (HBITMAP)SelectObject(hMemDC, sprite);
-		
-		BitBlt(hdc, sprite_x, sprite_y, sprite_w, sprite_h, hMemDC, 0, 0, SRCCOPY);
-		SelectObject(hMemDC, old_bitmap);
-		DeleteDC(hMemDC);
-	}
+	FillRect(hdc, &ps.rcPaint, active_brush);
 	EndPaint(hwnd, &ps);
 	return 0;
 }
@@ -140,18 +76,8 @@ LRESULT MainWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			}
 			return 0;
 		}
-		case WM_LBUTTONDOWN:
-		case WM_RBUTTONDOWN:
-		case WM_KEYDOWN:
-		case WM_MOUSEMOVE:
-			set_active_mode();
-			return 0;
 	}
 	return ProtoWindow::on_raw_msg(uMsg, wParam, lParam);
-}
-
-HBRUSH MainWindow::get_bg_brush() {
-	return (Active == paint_mode) ? active_brush : passive_brush;
 }
 
 void MainWindow::set_active_color(BYTE r, BYTE g, BYTE b) {
@@ -159,57 +85,6 @@ void MainWindow::set_active_color(BYTE r, BYTE g, BYTE b) {
 	active_brush = CreateSolidBrush(RGB(r, g, b));
 }
 
-VOID CALLBACK anim_timer_callback(HWND hwnd, UINT unnamedParam2,
-					UINT_PTR unnamedParam3, DWORD unnamedParam4) {
-	MainWindow* head = reinterpret_cast<MainWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-	head->invalidate_client();
-}
-
-VOID CALLBACK mode_timer_callback(HWND hwnd, UINT unnamedParam2,
-					UINT_PTR unnamedParam3, DWORD unnamedParam4) {
-	MainWindow* head = reinterpret_cast<MainWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-	head->set_passive_mode();
-}
-
-void MainWindow::set_active_mode() {
-	if (Passive == paint_mode) {
-		if (anim_timer) {
-			KillTimer(hwnd, anim_timer);
-		}
-		anim_timer = NULL;
-		paint_mode = Active;
-		mode_timer = SetTimer(hwnd, NULL, WAIT_GAP, mode_timer_callback);
-		invalidate_client();
-	}
-	else {
-		if (mode_timer) {
-			KillTimer(hwnd, mode_timer);
-		}
-		mode_timer = SetTimer(hwnd, NULL, WAIT_GAP, mode_timer_callback);
-	}
-}
-
-void MainWindow::set_passive_mode() {
-	if (Active == paint_mode) {
-		if (mode_timer) {
-			KillTimer(hwnd, mode_timer);
-		}
-		mode_timer = NULL;
-		paint_mode = Passive;
-		sprite_stamp = GetTickCount();
-		anim_timer = SetTimer(hwnd, NULL, FRAME_GAP, anim_timer_callback);
-		invalidate_client();
-	}
-}
-
 MainWindow::~MainWindow() {
-	DeleteObject(passive_brush);
 	DeleteObject(active_brush);
-	DeleteObject(sprite);
-	if (mode_timer) {
-		KillTimer(hwnd, mode_timer);
-	}
-	if (anim_timer) {
-		KillTimer(hwnd, anim_timer);
-	}
 }
