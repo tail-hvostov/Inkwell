@@ -65,6 +65,9 @@
     <ClInclude Include="TextBox.h">
       <Filter>Заголовочные файлы\UIHelper\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="ControlParent.h">
+      <Filter>Заголовочные файлы\UIHelper</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="inkwell.rc">

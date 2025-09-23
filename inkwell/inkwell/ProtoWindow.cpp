@@ -80,6 +80,8 @@ LRESULT ProtoWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+void ProtoWindow::on_create() {}
+
 ProtoWindow::~ProtoWindow() {}
 
 void ProtoWindow::invalidate_client() {
@@ -92,4 +94,8 @@ void ProtoWindow::query_client_dims(LONG* w, LONG* h) {
 		*w = rect.right;
 		*h = rect.bottom;
 	}
+}
+
+HWND ProtoWindow::get_hwnd() {
+	return hwnd;
 }

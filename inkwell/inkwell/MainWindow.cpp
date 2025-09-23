@@ -88,3 +88,7 @@ void MainWindow::set_active_color(BYTE r, BYTE g, BYTE b) {
 MainWindow::~MainWindow() {
 	DeleteObject(active_brush);
 }
+
+void MainWindow::on_create() {
+	text_box.reset(new TextBox(10, 10, 60, 20, this));
+}
