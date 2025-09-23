@@ -76,6 +76,14 @@ LRESULT ProtoWindow::window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			on_resize(width, height);
 			return 0;
 		}
+		case WM_COMMAND:
+		{
+			//Я проверяю, что сообщение послало меню.
+			if (!HIWORD(wParam)) {
+				on_menu_press(LOWORD(wParam));
+			}
+			return 0;
+		}
 		default:
 			return on_raw_msg(uMsg, wParam, lParam);
 	}
@@ -114,3 +122,5 @@ void ProtoWindow::query_client_dims(LONG* w, LONG* h) {
 HWND ProtoWindow::get_hwnd() {
 	return hwnd;
 }
+
+void ProtoWindow::on_menu_press(WORD item) {}

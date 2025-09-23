@@ -17,6 +17,7 @@ protected:
 	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
 	virtual LRESULT on_close(WPARAM wParam, LPARAM lParam);
 	virtual void on_resize(UINT width, UINT height);
+	virtual void on_menu_press(WORD item);
 	virtual LRESULT on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam);
 public:
 	static LRESULT CALLBACK foundation_window_proc(HWND hwnd, UINT uMsg,

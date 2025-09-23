@@ -56,30 +56,20 @@ INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return FALSE;
 }
 
-LRESULT MainWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	switch (uMsg) {
-		case WM_COMMAND:
-		{
-			//Я проверяю, что сообщение послало меню.
-			if (!HIWORD(wParam)) {
-				switch (LOWORD(wParam)) {
-				case ID_40003:
-					set_active_color(120, 200, 60);
-					invalidate_client();
-					break;
-				case ID_ABOUT:
-					DialogBox(Application::Win32::get_hinstance(), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutProc);
-					break;
-				default:
-					set_active_color(120, 0, 60);
-					invalidate_client();
-					break;
-				}
-			}
-			return 0;
-		}
+void MainWindow::on_menu_press(WORD item) {
+	switch (item) {
+	case ID_40003:
+		set_active_color(120, 200, 60);
+		invalidate_client();
+		break;
+	case ID_ABOUT:
+		DialogBox(Application::Win32::get_hinstance(), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutProc);
+		break;
+	default:
+		set_active_color(120, 0, 60);
+		invalidate_client();
+		break;
 	}
-	return ProtoWindow::on_raw_msg(uMsg, wParam, lParam);
 }
 
 void MainWindow::set_active_color(BYTE r, BYTE g, BYTE b) {
