@@ -90,5 +90,5 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_create() {
-	text_box.reset(new TextBox(10, 10, 60, 20, this));
+	text_box.reset(new TextBox(10, 10, 120, 40, this));
 }

@@ -1,6 +1,8 @@
 #include "ProtoWindow.h"
 #include "Application.h"
 
+#define WM_DCREATE WM_APP
+
 LRESULT CALLBACK ProtoWindow::foundation_window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	//uMsg - код сообщени€.
 	//ƒалее идут доп. параметры.
@@ -10,6 +12,7 @@ LRESULT CALLBACK ProtoWindow::foundation_window_proc(HWND hwnd, UINT uMsg, WPARA
 			CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
 			ProtoWindow* head = reinterpret_cast<ProtoWindow*>(pCreate->lpCreateParams);
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)head);
+			PostMessage(hwnd, WM_DCREATE, 0, 0);
 			return 0;
 		}
 	case WM_DESTROY:
@@ -17,6 +20,12 @@ LRESULT CALLBACK ProtoWindow::foundation_window_proc(HWND hwnd, UINT uMsg, WPARA
 			ProtoWindow* head = reinterpret_cast<ProtoWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 			delete head;
 			PostQuitMessage(0);
+			return 0;
+		}
+	case WM_DCREATE:
+		{
+			ProtoWindow* head = reinterpret_cast<ProtoWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+			head->on_create();
 			return 0;
 		}
 	default:
