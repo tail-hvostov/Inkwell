@@ -9,6 +9,7 @@ public:
 
 	void set_size(int w, int h);
 	char* get_selected_text();
+	char* cut_selected_text();
 };
 
 #endif

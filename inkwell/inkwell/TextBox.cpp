@@ -24,7 +24,43 @@ char* TextBox::get_selected_text() {
 		int text_length = GetWindowTextLength(hwnd);
 		char* buf = new char[text_length + 1];
 		GetWindowText(hwnd, buf, text_length + 1);
-		strncpy(result, buf + dwStart, length + 1);
+		memcpy(result, buf + dwStart, length);
+		result[length] = 0;
+		delete buf;
+	}
+	else {
+		length = 1;
+		result = new char[length];
+		result[0] = 0;
+	}
+
+	return result;
+}
+
+char* TextBox::cut_selected_text() {
+	int length;
+	char* result;
+
+	DWORD dwStart, dwEnd;
+	SendMessage(hwnd, EM_GETSEL, (WPARAM)&dwStart, (LPARAM)&dwEnd);
+	if (dwEnd > dwStart) {
+		length = dwEnd - dwStart;
+		result = new char[length + 1];
+		int text_length = GetWindowTextLength(hwnd);
+		char* buf = new char[text_length + 1];
+		GetWindowText(hwnd, buf, text_length + 1);
+		memcpy(result, buf + dwStart, length);
+		result[length] = 0;
+
+		char* tail = buf + dwEnd;
+		char* newTail = buf + dwStart;
+		while (*tail != 0) {
+			*newTail = *tail;
+			tail++;
+			newTail++;
+		}
+		*newTail = 0;
+		SetWindowText(hwnd, buf);
 		delete buf;
 	}
 	else {

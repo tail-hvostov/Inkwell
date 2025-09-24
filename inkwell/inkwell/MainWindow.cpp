@@ -63,10 +63,19 @@ void MainWindow::on_copy() {
 	delete text;
 }
 
+void MainWindow::on_cut() {
+	char* text = text_box->cut_selected_text();
+	Application::set_text_clipboard_data(text);
+	delete text;
+}
+
 void MainWindow::on_menu_press(WORD item) {
 	switch (item) {
 	case ID_MCOPY:
 		on_copy();
+		break;
+	case ID_MCUT:
+		on_cut();
 		break;
 	case ID_MQUIT:
 		PostMessage(hwnd, WM_CLOSE, 0, 0);
