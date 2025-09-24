@@ -133,6 +133,9 @@ void MainWindow::on_menu_press(WORD item) {
 	case ID_MFSAVE:
 		on_save();
 		break;
+	case ID_MFNEW:
+		on_new_document();
+		break;
 	case ID_MQUIT:
 		PostMessage(hwnd, WM_CLOSE, 0, 0);
 		break;
@@ -189,4 +192,11 @@ bool MainWindow::unsaved_changes_prompt() {
 		}
 	}
 	return result;
+}
+
+void MainWindow::on_new_document() {
+	if (unsaved_changes_prompt()) {
+		text_box->clear();
+		unsaved_changes = false;
+	}
 }

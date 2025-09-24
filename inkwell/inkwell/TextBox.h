@@ -12,6 +12,7 @@ public:
 	char* cut_selected_text();
 	void paste_text(const char* text);
 	char* get_text();
+	void clear();
 };
 
 #endif

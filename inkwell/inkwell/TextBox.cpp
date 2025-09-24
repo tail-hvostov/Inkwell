@@ -100,3 +100,7 @@ char* TextBox::get_text() {
 	GetWindowText(hwnd, buf, text_length + 1);
 	return buf;
 }
+
+void TextBox::clear() {
+	SetWindowText(hwnd, "");
+}
