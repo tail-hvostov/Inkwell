@@ -9,6 +9,8 @@ namespace Application {
 	void register_window_class(const char* name, int menu_id);
 	void mainloop();
 
+	void set_text_clipboard_data(const char* text);
+
 	namespace Win32 {
 		HINSTANCE get_hinstance();
 	};

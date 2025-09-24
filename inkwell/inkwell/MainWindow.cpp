@@ -59,7 +59,7 @@ INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 void MainWindow::on_copy() {
 	char* text = text_box->get_selected_text();
-	show_message(text);
+	Application::set_text_clipboard_data(text);
 	delete text;
 }
 

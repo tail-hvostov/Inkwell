@@ -35,6 +35,27 @@ namespace Application {
 		}
 	}
 
+	void set_text_clipboard_data(const char* text) {
+		if (!OpenClipboard(NULL)) {
+			return;
+		}
+		EmptyClipboard();
+		int text_length = strlen(text);
+		if (text_length) {
+			HGLOBAL hglbCopy = GlobalAlloc(GMEM_MOVEABLE, text_length + 1); 
+			if (!hglbCopy) {
+				goto Ending;
+			}
+			LPTSTR lptstrCopy = (LPTSTR)GlobalLock(hglbCopy);
+			memcpy(lptstrCopy, text, text_length); 
+			lptstrCopy[text_length] = 0; 
+			GlobalUnlock(hglbCopy);
+			SetClipboardData(CF_TEXT, hglbCopy);
+		}
+	Ending:
+		CloseClipboard();
+	}
+
 	namespace Win32 {
 		HINSTANCE get_hinstance() {
 			return hInstance;
