@@ -71,7 +71,7 @@ void MainWindow::on_cut() {
 
 void MainWindow::on_place() {
 	char* text = Application::get_text_clipboard_data();
-	show_message(text);
+	text_box->paste_text(text);
 	delete text;
 }
 

@@ -71,3 +71,25 @@ char* TextBox::cut_selected_text() {
 
 	return result;
 }
+
+void TextBox::paste_text(const char* text) {
+	int text_len = strlen(text);
+	int parag_len = GetWindowTextLength(hwnd);
+	char* buf = new char[text_len + parag_len + 1];
+	GetWindowText(hwnd, buf, parag_len + 1);
+	DWORD dwStart;
+	SendMessage(hwnd, EM_GETSEL, (WPARAM)&dwStart, NULL);
+
+	char* tail = buf + parag_len;
+	char* new_tail = buf + parag_len + text_len;
+	while (tail >= buf + dwStart) {
+		*new_tail = *tail;
+		tail--;
+		new_tail--;
+	}
+	memcpy(buf + dwStart, text, text_len);
+
+	SetWindowText(hwnd, buf);
+	SendMessage(hwnd, EM_SETSEL, dwStart + text_len, dwStart + text_len);
+	delete buf;
+}
