@@ -80,11 +80,19 @@ bool MainWindow::save_text(const char* file_name) {
 	HANDLE file = CreateFile(file_name, GENERIC_WRITE, 0, NULL,
 							CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (file != INVALID_HANDLE_VALUE) {
-		
+		char* text = text_box->get_text();
+		DWORD written_bytes;
+		if (WriteFile(file, text, strlen(text), &written_bytes, NULL)) {
+			result = true;
+		}
+		else {
+			show_message("Не удалось записать файл.");
+		}
+		delete[] text;
 		CloseHandle(file);
 	}
 	else {
-		show_message("Не удалось отткрыть файл.");
+		show_message("Не удалось открыть файл.");
 	}
 	return result;
 }

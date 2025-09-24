@@ -11,6 +11,7 @@ public:
 	char* get_selected_text();
 	char* cut_selected_text();
 	void paste_text(const char* text);
+	char* get_text();
 };
 
 #endif

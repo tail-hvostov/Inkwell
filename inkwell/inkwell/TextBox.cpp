@@ -93,3 +93,10 @@ void TextBox::paste_text(const char* text) {
 	SendMessage(hwnd, EM_SETSEL, dwStart + text_len, dwStart + text_len);
 	delete[] buf;
 }
+
+char* TextBox::get_text() {
+	int text_length = GetWindowTextLength(hwnd);
+	char* buf = new char[text_length + 1];
+	GetWindowText(hwnd, buf, text_length + 1);
+	return buf;
+}
