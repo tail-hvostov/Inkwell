@@ -13,6 +13,8 @@ protected:
 
 	ProtoWindow(const char* class_name, const char* title, int width, int height);
 
+	void show_message(const char* message);
+
 	virtual void on_create();
 	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
 	virtual LRESULT on_close(WPARAM wParam, LPARAM lParam);

@@ -8,9 +8,6 @@
 
 class MainWindow : public ProtoWindow {
 private:
-	HBRUSH active_brush;
-	void set_active_color(BYTE r, BYTE g, BYTE b);
-
 	std::unique_ptr<TextBox> text_box;
 
 	MainWindow();
@@ -23,8 +20,6 @@ protected:
 	virtual void on_resize(UINT width, UINT height);
 public:
 	static MainWindow* create();
-
-	virtual ~MainWindow();
 };
 
 #endif

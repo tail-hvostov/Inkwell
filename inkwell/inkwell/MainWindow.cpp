@@ -3,6 +3,7 @@
 #include "resource.h"
 
 #define TEXTBOX_MARGIN 10
+#define BG_COLOR RGB(0, 200, 60)
 
 namespace {
 	const char CLASS_NAME[] = "Inkwell Main Class";
@@ -29,15 +30,15 @@ MainWindow* MainWindow::create() {
 
 MainWindow::MainWindow() : ProtoWindow(CLASS_NAME, MAIN_WINDOW_NAME,
 										CW_USEDEFAULT, CW_USEDEFAULT)
-{
-	active_brush = CreateSolidBrush(RGB(0, 200, 60));
-}
+{}
 
 LRESULT MainWindow::on_paint(WPARAM wParam, LPARAM lParam) {
 	//—труктура дл€ рисовани€ клиентской части окна.
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(hwnd, &ps);
-	FillRect(hdc, &ps.rcPaint, active_brush);
+	HBRUSH brush = CreateSolidBrush(BG_COLOR);
+	FillRect(hdc, &ps.rcPaint, brush);
+	DeleteObject(brush);
 	EndPaint(hwnd, &ps);
 	return 0;
 }
@@ -58,27 +59,16 @@ INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 void MainWindow::on_menu_press(WORD item) {
 	switch (item) {
-	case ID_40003:
-		set_active_color(120, 200, 60);
-		invalidate_client();
+	case ID_MQUIT:
+		show_message("quit");
 		break;
-	case ID_ABOUT:
+	case ID_MABOUT:
 		DialogBox(Application::Win32::get_hinstance(), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutProc);
 		break;
 	default:
-		set_active_color(120, 0, 60);
-		invalidate_client();
+		show_message("This operation has not been implemented.");
 		break;
 	}
-}
-
-void MainWindow::set_active_color(BYTE r, BYTE g, BYTE b) {
-	DeleteObject(active_brush);
-	active_brush = CreateSolidBrush(RGB(r, g, b));
-}
-
-MainWindow::~MainWindow() {
-	DeleteObject(active_brush);
 }
 
 void MainWindow::calc_textbox_rect(RECT* rect) {

@@ -124,3 +124,7 @@ HWND ProtoWindow::get_hwnd() {
 }
 
 void ProtoWindow::on_menu_press(WORD item) {}
+
+void ProtoWindow::show_message(const char* message) {
+	MessageBox(NULL, message, "Alert", MB_OK);
+}
