@@ -44,8 +44,10 @@ LRESULT MainWindow::on_paint(WPARAM wParam, LPARAM lParam) {
 }
 
 LRESULT MainWindow::on_close(WPARAM wParam, LPARAM lParam) {
-	if (MessageBox(hwnd, "Вы точно хотите выйти?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
-		DestroyWindow(hwnd);
+	if (unsaved_changes_prompt()) {
+		if (MessageBox(hwnd, "Вы точно хотите выйти?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
+			DestroyWindow(hwnd);
+		}
 	}
 	return 0;
 }
@@ -113,6 +115,7 @@ bool MainWindow::on_save() {
 		result = save_text(name_buf);
 	}
 	delete[] name_buf;
+	unsaved_changes = unsaved_changes && result;
 	return result;
 }
 
@@ -163,6 +166,7 @@ void MainWindow::on_create() {
 								rect.right - rect.left,
 								rect.bottom - rect.top,
 								this));
+	unsaved_changes = false;
 }
 
 void MainWindow::on_resize(UINT width, UINT height) {
@@ -172,7 +176,17 @@ void MainWindow::on_resize(UINT width, UINT height) {
 void MainWindow::on_control_notification(ProtoControl* control, WORD notification) {
 	if (control == text_box.get()) {
 		if (notification == EN_CHANGE) {
-			show_message("here");
+			unsaved_changes = true;
 		}
 	}
+}
+
+bool MainWindow::unsaved_changes_prompt() {
+	bool result = true;
+	if (unsaved_changes) {
+		if (MessageBox(hwnd, "Вы не сохранили последние изменения. Сохранить их?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
+			result = on_save();
+		}
+	}
+	return result;
 }

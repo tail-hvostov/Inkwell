@@ -8,6 +8,7 @@
 
 class MainWindow : public ProtoWindow {
 private:
+	bool unsaved_changes;
 	std::unique_ptr<TextBox> text_box;
 
 	MainWindow();
@@ -19,6 +20,7 @@ private:
 	bool on_save();
 
 	bool save_text(const char* file_name);
+	bool unsaved_changes_prompt();
 protected:
 	virtual void on_create();
 	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
