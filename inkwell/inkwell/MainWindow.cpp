@@ -168,3 +168,11 @@ void MainWindow::on_create() {
 void MainWindow::on_resize(UINT width, UINT height) {
 	text_box->set_size(width - TEXTBOX_MARGIN * 2, height - TEXTBOX_MARGIN * 2);
 }
+
+void MainWindow::on_control_notification(ProtoControl* control, WORD notification) {
+	if (control == text_box.get()) {
+		if (notification == EN_CHANGE) {
+			show_message("here");
+		}
+	}
+}

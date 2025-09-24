@@ -16,6 +16,8 @@ protected:
 	void query_client_rect(RECT* rect);
 public:
 	virtual ~ProtoControl();
+
+	static ProtoControl* get_control_from_hwnd(HWND hwnd);
 };
 
 #endif

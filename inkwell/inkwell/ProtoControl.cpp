@@ -15,6 +15,11 @@ ProtoControl::ProtoControl(LPCSTR class_name, DWORD dwStyle, int x, int y, int w
 						Application::Win32::get_hinstance(),
 						NULL);
 	this->parent = parent;
+	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
+}
+
+ProtoControl* ProtoControl::get_control_from_hwnd(HWND hwnd) {
+	return (ProtoControl*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 }
 
 ProtoControl::~ProtoControl() {}

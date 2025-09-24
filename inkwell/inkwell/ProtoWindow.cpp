@@ -1,5 +1,6 @@
 #include "ProtoWindow.h"
 #include "Application.h"
+#include "ProtoControl.h"
 
 #define WM_DCREATE WM_APP
 
@@ -81,6 +82,14 @@ LRESULT ProtoWindow::window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			//я провер€ю, что сообщение послало меню.
 			if (!HIWORD(wParam)) {
 				on_menu_press(LOWORD(wParam));
+				
+			}
+			//Ёто элемент управлени€.
+			else if (lParam) {
+				ProtoControl* control = ProtoControl::get_control_from_hwnd((HWND)lParam);
+				if (control) {
+					on_control_notification(control, HIWORD(wParam));
+				}
 			}
 			return 0;
 		}
@@ -128,3 +137,5 @@ void ProtoWindow::on_menu_press(WORD item) {}
 void ProtoWindow::show_message(const char* message) {
 	MessageBox(NULL, message, "Alert", MB_OK);
 }
+
+void ProtoWindow::on_control_notification(ProtoControl* control, WORD notification) {}
