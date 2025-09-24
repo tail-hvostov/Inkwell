@@ -57,10 +57,16 @@ INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return FALSE;
 }
 
+void MainWindow::on_copy() {
+	char* text = text_box->get_selected_text();
+	show_message(text);
+	delete text;
+}
+
 void MainWindow::on_menu_press(WORD item) {
 	switch (item) {
 	case ID_MCOPY:
-		show_message("copy");
+		on_copy();
 		break;
 	case ID_MQUIT:
 		PostMessage(hwnd, WM_CLOSE, 0, 0);

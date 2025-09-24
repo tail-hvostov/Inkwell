@@ -12,6 +12,8 @@ private:
 
 	MainWindow();
 	void calc_textbox_rect(RECT* rect);
+
+	void on_copy();
 protected:
 	virtual void on_create();
 	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
