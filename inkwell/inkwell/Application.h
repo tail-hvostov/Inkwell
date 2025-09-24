@@ -10,6 +10,7 @@ namespace Application {
 	void mainloop();
 
 	void set_text_clipboard_data(const char* text);
+	char* get_text_clipboard_data();
 
 	namespace Win32 {
 		HINSTANCE get_hinstance();

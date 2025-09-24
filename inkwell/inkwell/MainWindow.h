@@ -15,6 +15,7 @@ private:
 
 	void on_copy();
 	void on_cut();
+	void on_place();
 protected:
 	virtual void on_create();
 	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);

@@ -69,6 +69,12 @@ void MainWindow::on_cut() {
 	delete text;
 }
 
+void MainWindow::on_place() {
+	char* text = Application::get_text_clipboard_data();
+	show_message(text);
+	delete text;
+}
+
 void MainWindow::on_menu_press(WORD item) {
 	switch (item) {
 	case ID_MCOPY:
@@ -76,6 +82,9 @@ void MainWindow::on_menu_press(WORD item) {
 		break;
 	case ID_MCUT:
 		on_cut();
+		break;
+	case ID_MPLACE:
+		on_place();
 		break;
 	case ID_MQUIT:
 		PostMessage(hwnd, WM_CLOSE, 0, 0);

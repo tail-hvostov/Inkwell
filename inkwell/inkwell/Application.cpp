@@ -56,6 +56,37 @@ namespace Application {
 		CloseClipboard();
 	}
 
+	char* get_text_clipboard_data() {
+		char* result;
+		if (!IsClipboardFormatAvailable(CF_TEXT)) {
+            goto Failure; 
+		}
+        if (!OpenClipboard(NULL))  {
+            goto Failure;
+		}
+		HGLOBAL hglb = GetClipboardData(CF_TEXT);
+		if (!hglb) {
+			CloseClipboard();
+			goto Failure;
+		}
+		LPTSTR lptstr = (LPSTR)GlobalLock(hglb);
+		if (!lptstr) {
+			CloseClipboard();
+			goto Failure;
+		}
+		int text_length = strlen(lptstr);
+		result = new char[text_length + 1];
+		memcpy(result, lptstr, text_length);
+		result[text_length] = 0;
+		GlobalUnlock(hglb);
+		CloseClipboard();
+		return result;
+	Failure:
+		result = new char[1];
+		result[0] = 0;
+		return result;
+	}
+
 	namespace Win32 {
 		HINSTANCE get_hinstance() {
 			return hInstance;
