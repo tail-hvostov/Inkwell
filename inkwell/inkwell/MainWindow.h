@@ -19,7 +19,9 @@ private:
 	void on_place();
 	bool on_save();
 	void on_new_document();
+	void on_open();
 
+	void load_text(const char* file_name);
 	bool save_text(const char* file_name);
 	bool unsaved_changes_prompt();
 protected:

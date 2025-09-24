@@ -104,3 +104,7 @@ char* TextBox::get_text() {
 void TextBox::clear() {
 	SetWindowText(hwnd, "");
 }
+
+void TextBox::set_text(const char* text) {
+	SetWindowText(hwnd, text);
+}

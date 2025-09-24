@@ -136,6 +136,9 @@ void MainWindow::on_menu_press(WORD item) {
 	case ID_MFNEW:
 		on_new_document();
 		break;
+	case ID_MFOPEN:
+		on_open();
+		break;
 	case ID_MQUIT:
 		PostMessage(hwnd, WM_CLOSE, 0, 0);
 		break;
@@ -198,5 +201,49 @@ void MainWindow::on_new_document() {
 	if (unsaved_changes_prompt()) {
 		text_box->clear();
 		unsaved_changes = false;
+	}
+}
+
+void MainWindow::load_text(const char* file_name) {
+	HANDLE file = CreateFile(file_name, GENERIC_READ, 0, NULL,
+							OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (file != INVALID_HANDLE_VALUE) {
+		DWORD read_bytes;
+		DWORD file_length;
+		file_length = GetFileSize(file, NULL);
+		int f = GetLastError();
+		char* text = new char[file_length + 1];
+		if (ReadFile(file, text, file_length, &read_bytes, NULL)) {
+			text[file_length] = 0;
+			text_box->set_text(text);
+			unsaved_changes = false;
+		}
+		else {
+			show_message("Не удалось прочитать файл.");
+		}
+		delete[] text;
+		CloseHandle(file);
+	}
+	else {
+		show_message("Не удалось открыть файл.");
+	}
+}
+
+void MainWindow::on_open() {
+	if (unsaved_changes_prompt()) {
+		OPENFILENAME ofn;
+		char* name_buf = new char[256];
+
+		memset(&ofn, 0, sizeof(OPENFILENAME));
+		memset(name_buf, 0, 256);
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.hwndOwner = hwnd;
+		ofn.hInstance = Application::Win32::get_hinstance();
+		ofn.lpstrFile = name_buf;
+		ofn.nMaxFile = 256;
+		if (GetOpenFileName(&ofn)) {
+			load_text(name_buf);
+		}
+		delete[] name_buf;
 	}
 }
