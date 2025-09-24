@@ -59,8 +59,11 @@ INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 void MainWindow::on_menu_press(WORD item) {
 	switch (item) {
+	case ID_MCOPY:
+		show_message("copy");
+		break;
 	case ID_MQUIT:
-		show_message("quit");
+		PostMessage(hwnd, WM_CLOSE, 0, 0);
 		break;
 	case ID_MABOUT:
 		DialogBox(Application::Win32::get_hinstance(), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutProc);
