@@ -26,7 +26,7 @@ char* TextBox::get_selected_text() {
 		GetWindowText(hwnd, buf, text_length + 1);
 		memcpy(result, buf + dwStart, length);
 		result[length] = 0;
-		delete buf;
+		delete[] buf;
 	}
 	else {
 		length = 1;
@@ -61,7 +61,7 @@ char* TextBox::cut_selected_text() {
 		}
 		*newTail = 0;
 		SetWindowText(hwnd, buf);
-		delete buf;
+		delete[] buf;
 	}
 	else {
 		length = 1;
@@ -91,5 +91,5 @@ void TextBox::paste_text(const char* text) {
 
 	SetWindowText(hwnd, buf);
 	SendMessage(hwnd, EM_SETSEL, dwStart + text_len, dwStart + text_len);
-	delete buf;
+	delete[] buf;
 }

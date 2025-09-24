@@ -16,6 +16,9 @@ private:
 	void on_copy();
 	void on_cut();
 	void on_place();
+	bool on_save();
+
+	bool save_text(const char* file_name);
 protected:
 	virtual void on_create();
 	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);

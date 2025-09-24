@@ -60,19 +60,52 @@ INT_PTR CALLBACK AboutProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 void MainWindow::on_copy() {
 	char* text = text_box->get_selected_text();
 	Application::set_text_clipboard_data(text);
-	delete text;
+	delete[] text;
 }
 
 void MainWindow::on_cut() {
 	char* text = text_box->cut_selected_text();
 	Application::set_text_clipboard_data(text);
-	delete text;
+	delete[] text;
 }
 
 void MainWindow::on_place() {
 	char* text = Application::get_text_clipboard_data();
 	text_box->paste_text(text);
-	delete text;
+	delete[] text;
+}
+
+bool MainWindow::save_text(const char* file_name) {
+	bool result = false;
+	HANDLE file = CreateFile(file_name, GENERIC_WRITE, 0, NULL,
+							CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (file != INVALID_HANDLE_VALUE) {
+		
+		CloseHandle(file);
+	}
+	else {
+		show_message("Не удалось отткрыть файл.");
+	}
+	return result;
+}
+
+bool MainWindow::on_save() {
+	bool result = false;
+	OPENFILENAME ofn;
+	char* name_buf = new char[256];
+
+	memset(&ofn, 0, sizeof(OPENFILENAME));
+	memset(name_buf, 0, 256);
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = hwnd;
+	ofn.hInstance = Application::Win32::get_hinstance();
+	ofn.lpstrFile = name_buf;
+	ofn.nMaxFile = 256;
+	if (GetSaveFileName(&ofn)) {
+		result = save_text(name_buf);
+	}
+	delete[] name_buf;
+	return result;
 }
 
 void MainWindow::on_menu_press(WORD item) {
@@ -85,6 +118,9 @@ void MainWindow::on_menu_press(WORD item) {
 		break;
 	case ID_MPLACE:
 		on_place();
+		break;
+	case ID_MFSAVE:
+		on_save();
 		break;
 	case ID_MQUIT:
 		PostMessage(hwnd, WM_CLOSE, 0, 0);
