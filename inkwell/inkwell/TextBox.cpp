@@ -23,9 +23,8 @@ char* TextBox::get_selected_text() {
 		result = new char[length + 1];
 		int text_length = GetWindowTextLength(hwnd);
 		char* buf = new char[text_length + 1];
-		GetWindowText(hwnd, buf, text_length);
-		strncpy(result, buf + dwStart, length);
-		result[length] = 0;
+		GetWindowText(hwnd, buf, text_length + 1);
+		strncpy(result, buf + dwStart, length + 1);
 		delete buf;
 	}
 	else {
