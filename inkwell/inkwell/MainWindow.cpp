@@ -45,9 +45,7 @@ LRESULT MainWindow::on_paint(WPARAM wParam, LPARAM lParam) {
 
 LRESULT MainWindow::on_close(WPARAM wParam, LPARAM lParam) {
 	if (unsaved_changes_prompt()) {
-		if (MessageBox(hwnd, "Вы точно хотите выйти?", MAIN_WINDOW_NAME, MB_OKCANCEL) == IDOK) {
-			DestroyWindow(hwnd);
-		}
+		DestroyWindow(hwnd);
 	}
 	return 0;
 }
@@ -115,7 +113,9 @@ bool MainWindow::on_save() {
 		result = save_text(name_buf);
 	}
 	delete[] name_buf;
-	unsaved_changes = unsaved_changes && result;
+	if (unsaved_changes) {
+		unsaved_changes = !result;
+	}
 	return result;
 }
 
