@@ -65,6 +65,7 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="ProtoControl.cpp" />
     <ClCompile Include="ProtoWindow.cpp" />
+    <ClCompile Include="Surface.cpp" />
     <ClCompile Include="TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -74,10 +75,14 @@
     <ClInclude Include="ProtoControl.h" />
     <ClInclude Include="ProtoWindow.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Surface.h" />
     <ClInclude Include="TextBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="inkwell.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dem_sprite.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

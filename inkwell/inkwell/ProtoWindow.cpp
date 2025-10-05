@@ -64,7 +64,13 @@ void ProtoWindow::show(int nCmdShow) {
 LRESULT ProtoWindow::window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg) {
 		case WM_PAINT:
-			return on_paint(wParam, lParam);
+		{
+			PAINTSTRUCT ps;
+			BeginPaint(hwnd, &ps);
+			LRESULT result = on_paint(&ps);
+			EndPaint(hwnd, &ps);
+			return result;
+		}
 		case WM_CLOSE:
 			return on_close(wParam, lParam);
 		case WM_DCREATE:
@@ -98,8 +104,8 @@ LRESULT ProtoWindow::window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	}
 }
 
-LRESULT ProtoWindow::on_paint(WPARAM wParam, LPARAM lParam) {
-	return DefWindowProc(hwnd, WM_PAINT, wParam, lParam);
+LRESULT ProtoWindow::on_paint(PAINTSTRUCT* ps) {
+	return DefWindowProc(hwnd, WM_PAINT, 0, 0);
 }
 
 LRESULT ProtoWindow::on_close(WPARAM wParam, LPARAM lParam) {

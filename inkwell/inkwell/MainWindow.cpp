@@ -11,16 +11,6 @@ namespace {
 	bool is_class_registered = false;
 };
 
-void query_bitmap_dimensions(HBITMAP hbitmap, LONG* w, LONG* h) {
-	if (hbitmap) {
-		//—труктура содержит параметры BMP.
-		BITMAP bm;
-		GetObject(hbitmap, (int) sizeof bm, &bm);
-		*w = bm.bmWidth;
-		*h = bm.bmHeight;
-	}
-}
-
 MainWindow* MainWindow::create() {
 	if (!is_class_registered) {
 		Application::register_window_class(CLASS_NAME, IDR_MENU1);
@@ -32,14 +22,12 @@ MainWindow::MainWindow() : ProtoWindow(CLASS_NAME, MAIN_WINDOW_NAME,
 										CW_USEDEFAULT, CW_USEDEFAULT)
 {}
 
-LRESULT MainWindow::on_paint(WPARAM wParam, LPARAM lParam) {
+LRESULT MainWindow::on_paint(PAINTSTRUCT* ps) {
 	//—труктура дл€ рисовани€ клиентской части окна.
-	PAINTSTRUCT ps;
-	HDC hdc = BeginPaint(hwnd, &ps);
+	HDC hdc = ps->hdc;
 	HBRUSH brush = CreateSolidBrush(BG_COLOR);
-	FillRect(hdc, &ps.rcPaint, brush);
+	FillRect(hdc, &ps->rcPaint, brush);
 	DeleteObject(brush);
-	EndPaint(hwnd, &ps);
 	return 0;
 }
 

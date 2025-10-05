@@ -26,7 +26,7 @@ private:
 	bool unsaved_changes_prompt();
 protected:
 	virtual void on_create();
-	virtual LRESULT on_paint(WPARAM wParam, LPARAM lParam);
+	virtual LRESULT on_paint(PAINTSTRUCT* ps);
 	virtual LRESULT on_close(WPARAM wParam, LPARAM lParam);
 	virtual void on_menu_press(WORD item);
 	virtual void on_resize(UINT width, UINT height);
