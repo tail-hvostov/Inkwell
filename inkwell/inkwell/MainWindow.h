@@ -6,10 +6,28 @@
 #include "ProtoWindow.h"
 #include "TextBox.h"
 #include "Surface.h"
+#include "SuperTimer.h"
 
 class MainWindow : public ProtoWindow {
 private:
 	std::unique_ptr<Surface> sprite;
+	std::unique_ptr<SuperTimer> freeze_timer;
+	std::unique_ptr<SuperTimer> anim_timer;
+	std::unique_ptr<SuperTimer> cooldown_timer;
+	int sprite_x;
+	int sprite_y;
+	int sprite_vx;
+	int sprite_vy;
+
+	DWORD sprite_stamp;
+	void auto_sprite_move();
+	void move_sprite_right();
+	void move_sprite_left();
+	void move_sprite_up();
+	void move_sprite_down();
+	void shift_sprite(int vx, int vy);
+	void init_sprite();
+	void delay_animation();
 
 	bool unsaved_changes;
 	std::unique_ptr<TextBox> text_box;

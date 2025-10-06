@@ -4,6 +4,8 @@
 
 #define TEXTBOX_MARGIN 10
 #define BG_COLOR RGB(0, 200, 60)
+#define FREEZE_DELAY 5000
+#define SPRITE_VELOCITY 80
 
 namespace {
 	const char CLASS_NAME[] = "Inkwell Main Class";
@@ -28,6 +30,9 @@ void MainWindow::on_paint(PAINTSTRUCT* ps) {
 	HBRUSH brush = CreateSolidBrush(BG_COLOR);
 	FillRect(hdc, &ps->rcPaint, brush);
 	DeleteObject(brush);
+	if (sprite_mode) {
+		sprite->blit(hdc, sprite_x, sprite_y);
+	}
 }
 
 LRESULT MainWindow::on_close(WPARAM wParam, LPARAM lParam) {
@@ -107,6 +112,7 @@ bool MainWindow::on_save() {
 }
 
 void MainWindow::on_menu_press(WORD item) {
+	delay_animation();
 	switch (item) {
 	case ID_MCOPY:
 		on_copy();
@@ -152,6 +158,22 @@ void MainWindow::calc_textbox_rect(RECT* rect) {
 	}
 }
 
+void MainWindow::init_sprite() {
+	sprite.reset(new Surface(IDB_DEMSPRITE));
+	sprite_x = 40;
+	sprite_y = 60;
+	sprite_vx = SPRITE_VELOCITY;
+	sprite_vy = SPRITE_VELOCITY;
+	sprite_mode = false;
+	freeze_timer.reset(new SuperTimer([this]() {shift_mode();}, FREEZE_DELAY));
+	cooldown_timer.reset(new SuperTimer([this]() {
+		sprite_stamp = GetTickCount();
+		anim_timer->start();
+		cooldown_timer->stop();
+	}, 80, false));
+	anim_timer.reset(new SuperTimer([this]() {auto_sprite_move();}, 40, false));
+}
+
 void MainWindow::on_create() {
 	RECT rect;
 	calc_textbox_rect(&rect);
@@ -159,10 +181,8 @@ void MainWindow::on_create() {
 								rect.right - rect.left,
 								rect.bottom - rect.top,
 								this));
-	text_box->set_enabled(false);
 	unsaved_changes = false;
-	sprite.reset(new Surface(IDB_DEMSPRITE));
-	sprite_mode = false;
+	init_sprite();
 }
 
 void MainWindow::on_resize(UINT width, UINT height) {
@@ -243,16 +263,16 @@ LRESULT MainWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	case WM_CHAR:
 		switch (wParam) {
 		case L'w':
-			show_message("Here");
+			move_sprite_up();
 			break;
 		case L'a':
-			show_message("Here2");
+			move_sprite_left();
 			break;
 		case L's':
-			show_message("Here3");
+			move_sprite_down();
 			break;
 		case L'd':
-			show_message("Here4");
+			move_sprite_right();
 			break;
 		}
 		return 0;
@@ -262,31 +282,131 @@ LRESULT MainWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 void MainWindow::on_keydown(WPARAM key, LPARAM params) {
-	switch (key) {
-	case VK_UP:
-		show_message("Here");
-		break;
-	case VK_LEFT:
-		show_message("Here");
-		break;
-	case VK_RIGHT:
-		show_message("Here");
-		break;
-	case VK_DOWN:
-		show_message("Here");
-		break;
-	default:
-		shift_mode();
-		break;
+	if (sprite_mode) {
+		switch (key) {
+		case VK_UP:
+			move_sprite_up();
+			break;
+		case VK_LEFT:
+			move_sprite_left();
+			break;
+		case VK_RIGHT:
+			move_sprite_right();
+			break;
+		case VK_DOWN:
+			move_sprite_down();
+			break;
+		case 'W':
+		case 'A':
+		case 'S':
+		case 'D':
+			break;
+		default:
+			shift_mode();
+			break;
+		}
 	}
 }
 
 void MainWindow::shift_mode() {
 	sprite_mode = !sprite_mode;
 	if (sprite_mode) {
+		sprite_stamp = GetTickCount();
+		freeze_timer->stop();
 		text_box->set_visible(false);
+		anim_timer->start();
 	}
 	else {
 		text_box->set_visible(true);
+		freeze_timer->start();
+		cooldown_timer->stop();
+		anim_timer->stop();
+	}
+}
+
+void MainWindow::shift_sprite(int vx, int vy) {
+	DWORD old_stamp = sprite_stamp;
+	sprite_stamp = GetTickCount();
+	long delta = sprite_stamp - old_stamp;
+	long shift = ((delta / 1000.0) * vx);
+	sprite_x += shift;
+	shift = ((delta / 1000.0) * vy);
+	sprite_y += shift;
+}
+
+void MainWindow::auto_sprite_move() {
+	LONG client_w, client_h, sprite_w, sprite_h;
+	sprite->query_dimensions(&sprite_w, &sprite_h);
+	query_client_dims(&client_w, &client_h);
+	shift_sprite(sprite_vx, sprite_vy);
+	long overrun;
+	overrun = sprite_x + sprite_w - client_w;
+	if (overrun > 0) {
+		sprite_x -= overrun * 2;
+		sprite_vx = -SPRITE_VELOCITY;
+	}
+	else if (sprite_x < 0) {
+		sprite_x *= -1;
+		sprite_vx = SPRITE_VELOCITY;
+	}
+
+	overrun = sprite_y + sprite_h - client_h;
+	if (overrun > 0) {
+		sprite_y -= overrun * 2;
+		sprite_vy = -SPRITE_VELOCITY;
+	}
+	else if (sprite_y < 0) {
+		sprite_y *= -1;
+		sprite_vy = SPRITE_VELOCITY;
+	}
+	this->invalidate_client();
+}
+
+void MainWindow::move_sprite_down() {
+	anim_timer->stop();
+	cooldown_timer->start();
+	shift_sprite(0, SPRITE_VELOCITY);
+	invalidate_client();
+}
+
+void MainWindow::move_sprite_left() {
+	anim_timer->stop();
+	cooldown_timer->start();
+	shift_sprite(-SPRITE_VELOCITY, 0);
+	if (sprite_x < 0) {
+		sprite_x = 0;
+	}
+	invalidate_client();
+}
+
+void MainWindow::move_sprite_up() {
+	anim_timer->stop();
+	cooldown_timer->start();
+	shift_sprite(0, -SPRITE_VELOCITY);
+	if (sprite_y < 0) {
+		sprite_y = 0;
+	}
+	invalidate_client();
+}
+
+void MainWindow::move_sprite_right() {
+	LONG cw, cy;
+	query_client_dims(&cw, &cy);
+	anim_timer->stop();
+	cooldown_timer->start();
+	shift_sprite(SPRITE_VELOCITY, 0);
+	int overrun = sprite_x + sprite->get_w() - cw;
+	if (overrun > 0) {
+		sprite_x -= overrun;
+	}
+	invalidate_client();
+}
+
+void MainWindow::delay_animation() {
+	if (sprite_mode) {
+		shift_mode();
+	}
+	else {
+		freeze_timer->start();
 	}
 }
