@@ -18,11 +18,12 @@ protected:
 	void show_message(const char* message);
 
 	virtual void on_create();
-	virtual LRESULT on_paint(PAINTSTRUCT* ps);
+	virtual void on_paint(PAINTSTRUCT* ps);
 	virtual LRESULT on_close(WPARAM wParam, LPARAM lParam);
 	virtual void on_resize(UINT width, UINT height);
 	virtual void on_menu_press(WORD item);
 	virtual void on_control_notification(ProtoControl* control, WORD notification);
+	virtual void on_keydown(WPARAM key, LPARAM params);
 	virtual LRESULT on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam);
 public:
 	static LRESULT CALLBACK foundation_window_proc(HWND hwnd, UINT uMsg,

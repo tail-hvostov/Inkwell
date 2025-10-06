@@ -4,7 +4,9 @@
 #define STYLE WS_BORDER | WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL
 
 TextBox::TextBox(int x, int y, int w, int h, ControlParent* parent) :
-				ProtoControl(CLASS_NAME, STYLE, x, y, w, h, parent)  {}
+				ProtoControl(CLASS_NAME, STYLE, x, y, w, h, parent)  {
+	is_visible = true;
+}
 
 void TextBox::set_size(int w, int h) {
 	RECT rect;
@@ -107,4 +109,18 @@ void TextBox::clear() {
 
 void TextBox::set_text(const char* text) {
 	SetWindowText(hwnd, text);
+}
+
+void TextBox::set_enabled(bool val) {
+	EnableWindow(hwnd, val);
+}
+
+void TextBox::set_visible(bool val) {
+	is_visible = !is_visible;
+	if (is_visible) {
+		ShowWindow(hwnd, SW_SHOW);
+	}
+	else {
+		ShowWindow(hwnd, SW_HIDE);
+	}
 }

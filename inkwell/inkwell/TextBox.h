@@ -4,6 +4,8 @@
 #include "ProtoControl.h"
 
 class TextBox : public ProtoControl {
+private:
+	bool is_visible;
 public:
 	TextBox(int x, int y, int w, int h, ControlParent* parent);
 
@@ -14,6 +16,8 @@ public:
 	char* get_text();
 	void set_text(const char* text);
 	void clear();
+	void set_enabled(bool val);
+	void set_visible(bool val);
 };
 
 #endif

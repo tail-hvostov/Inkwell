@@ -22,13 +22,12 @@ MainWindow::MainWindow() : ProtoWindow(CLASS_NAME, MAIN_WINDOW_NAME,
 										CW_USEDEFAULT, CW_USEDEFAULT)
 {}
 
-LRESULT MainWindow::on_paint(PAINTSTRUCT* ps) {
+void MainWindow::on_paint(PAINTSTRUCT* ps) {
 	//—труктура дл€ рисовани€ клиентской части окна.
 	HDC hdc = ps->hdc;
 	HBRUSH brush = CreateSolidBrush(BG_COLOR);
 	FillRect(hdc, &ps->rcPaint, brush);
 	DeleteObject(brush);
-	return 0;
 }
 
 LRESULT MainWindow::on_close(WPARAM wParam, LPARAM lParam) {
@@ -160,7 +159,10 @@ void MainWindow::on_create() {
 								rect.right - rect.left,
 								rect.bottom - rect.top,
 								this));
+	text_box->set_enabled(false);
 	unsaved_changes = false;
+	sprite.reset(new Surface(IDB_DEMSPRITE));
+	sprite_mode = false;
 }
 
 void MainWindow::on_resize(UINT width, UINT height) {
@@ -233,5 +235,58 @@ void MainWindow::on_open() {
 			load_text(name_buf);
 		}
 		delete[] name_buf;
+	}
+}
+
+LRESULT MainWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	switch (uMsg) {
+	case WM_CHAR:
+		switch (wParam) {
+		case L'w':
+			show_message("Here");
+			break;
+		case L'a':
+			show_message("Here2");
+			break;
+		case L's':
+			show_message("Here3");
+			break;
+		case L'd':
+			show_message("Here4");
+			break;
+		}
+		return 0;
+	default:
+		return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	}
+}
+
+void MainWindow::on_keydown(WPARAM key, LPARAM params) {
+	switch (key) {
+	case VK_UP:
+		show_message("Here");
+		break;
+	case VK_LEFT:
+		show_message("Here");
+		break;
+	case VK_RIGHT:
+		show_message("Here");
+		break;
+	case VK_DOWN:
+		show_message("Here");
+		break;
+	default:
+		shift_mode();
+		break;
+	}
+}
+
+void MainWindow::shift_mode() {
+	sprite_mode = !sprite_mode;
+	if (sprite_mode) {
+		text_box->set_visible(false);
+	}
+	else {
+		text_box->set_visible(true);
 	}
 }

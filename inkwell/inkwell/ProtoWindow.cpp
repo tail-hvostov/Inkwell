@@ -67,9 +67,9 @@ LRESULT ProtoWindow::window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		{
 			PAINTSTRUCT ps;
 			BeginPaint(hwnd, &ps);
-			LRESULT result = on_paint(&ps);
+			on_paint(&ps);
 			EndPaint(hwnd, &ps);
-			return result;
+			return 0;
 		}
 		case WM_CLOSE:
 			return on_close(wParam, lParam);
@@ -99,13 +99,16 @@ LRESULT ProtoWindow::window_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			}
 			return 0;
 		}
+		case WM_KEYDOWN:
+			on_keydown(wParam, lParam);
+			return 0;
 		default:
 			return on_raw_msg(uMsg, wParam, lParam);
 	}
 }
 
-LRESULT ProtoWindow::on_paint(PAINTSTRUCT* ps) {
-	return DefWindowProc(hwnd, WM_PAINT, 0, 0);
+void ProtoWindow::on_paint(PAINTSTRUCT* ps) {
+	DefWindowProc(hwnd, WM_PAINT, 0, 0);
 }
 
 LRESULT ProtoWindow::on_close(WPARAM wParam, LPARAM lParam) {
@@ -115,6 +118,8 @@ LRESULT ProtoWindow::on_close(WPARAM wParam, LPARAM lParam) {
 LRESULT ProtoWindow::on_raw_msg(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
+
+void ProtoWindow::on_keydown(WPARAM key, LPARAM params) {}
 
 void ProtoWindow::on_resize(UINT width, UINT height) {}
 
