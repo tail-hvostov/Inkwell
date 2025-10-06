@@ -1,11 +1,16 @@
 #ifndef _TEXTBOX_H_
 #define _TEXTBOX_H_
 
+#include <functional>
+
 #include "ProtoControl.h"
 
 class TextBox : public ProtoControl {
 private:
 	bool is_visible;
+	std::function<void()> on_change_listener;
+protected:
+	virtual void wnd_proc_payload(UINT uMsg, WPARAM wParam, LPARAM lParam);
 public:
 	TextBox(int x, int y, int w, int h, ControlParent* parent);
 
@@ -18,6 +23,7 @@ public:
 	void clear();
 	void set_enabled(bool val);
 	void set_visible(bool val);
+	void set_on_change_listener(std::function<void()> listener);
 };
 
 #endif

@@ -181,6 +181,7 @@ void MainWindow::on_create() {
 								rect.right - rect.left,
 								rect.bottom - rect.top,
 								this));
+	text_box->set_on_change_listener([this]() {delay_animation();});
 	unsaved_changes = false;
 	init_sprite();
 }

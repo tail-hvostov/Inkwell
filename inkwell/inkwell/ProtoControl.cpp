@@ -1,6 +1,11 @@
 #include "ProtoControl.h"
 #include "Application.h"
 
+LRESULT CALLBACK EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	ProtoControl* control = ProtoControl::get_control_from_hwnd(hwnd);
+	return control->control_wnd_proc(uMsg, wParam, lParam);
+}
+
 ProtoControl::ProtoControl(LPCSTR class_name, DWORD dwStyle, int x, int y, int w, int h, ControlParent* parent) {
 	hwnd = CreateWindowEx(0,
 						class_name,
@@ -16,6 +21,7 @@ ProtoControl::ProtoControl(LPCSTR class_name, DWORD dwStyle, int x, int y, int w
 						NULL);
 	this->parent = parent;
 	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)this);
+	original_proc = (WNDPROC)SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)EditSubclassProc);
 }
 
 ProtoControl* ProtoControl::get_control_from_hwnd(HWND hwnd) {
@@ -38,4 +44,11 @@ void ProtoControl::query_client_rect(RECT* rect) {
 	rect->top = ptTopLeft.y;
 	rect->right = ptBottomRight.x;
 	rect->bottom = ptBottomRight.y;
+}
+
+void ProtoControl::wnd_proc_payload(UINT uMsg, WPARAM wParam, LPARAM lParam) {}
+
+LRESULT ProtoControl::control_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	wnd_proc_payload(uMsg, wParam, lParam);
+	return CallWindowProc(original_proc, hwnd, uMsg, wParam, lParam);
 }

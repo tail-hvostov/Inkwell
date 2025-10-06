@@ -6,6 +6,7 @@
 TextBox::TextBox(int x, int y, int w, int h, ControlParent* parent) :
 				ProtoControl(CLASS_NAME, STYLE, x, y, w, h, parent)  {
 	is_visible = true;
+	on_change_listener = nullptr;
 }
 
 void TextBox::set_size(int w, int h) {
@@ -122,5 +123,17 @@ void TextBox::set_visible(bool val) {
 	}
 	else {
 		ShowWindow(hwnd, SW_HIDE);
+	}
+}
+
+void TextBox::set_on_change_listener(std::function<void()> listener) {
+	on_change_listener = listener;
+}
+
+void TextBox::wnd_proc_payload(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	if (on_change_listener != nullptr) {
+		if (uMsg == WM_CHAR) {
+			on_change_listener();
+		}
 	}
 }
