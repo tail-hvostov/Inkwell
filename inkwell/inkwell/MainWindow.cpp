@@ -364,9 +364,15 @@ void MainWindow::auto_sprite_move() {
 }
 
 void MainWindow::move_sprite_down() {
+	LONG cw, cy;
+	query_client_dims(&cw, &cy);
 	anim_timer->stop();
 	cooldown_timer->start();
 	shift_sprite(0, SPRITE_VELOCITY);
+	int overrun = sprite_y + sprite->get_h() - cy;
+	if (overrun > 0) {
+		sprite_y -= overrun;
+	}
 	invalidate_client();
 }
 
